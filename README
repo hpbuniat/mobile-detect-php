@@ -1,0 +1,4 @@
+Mobile-Device Test
+
+Another simple script to test if a user-agent is a mobile device - w/ unit-test !
+For more Devices to test, look at: http://techpatterns.com/downloads/firefox/useragentswitcher.xml
