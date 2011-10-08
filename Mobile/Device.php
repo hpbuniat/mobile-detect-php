@@ -40,7 +40,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-class Mobile_Device {
+class Unister_Mobile_Device {
 
     /**
      * Error Message, if there was a check for a unknown device-class
@@ -91,7 +91,7 @@ class Mobile_Device {
      *
      *  @var string
      */
-    protected $_sClass;
+    protected $_sClass = null;
 
     /**
      * Init the Device-Detector
@@ -99,23 +99,7 @@ class Mobile_Device {
      * @param  array $aEnv The Environment, $_SERVER if not set
      */
     public function __construct($aEnv = array()) {
-        $aEnv = (empty($aEnv) === true) ? $_SERVER : $aEnv;
-        $this->_sHttpAccept = (isset($aEnv['HTTP_ACCEPT']) === true) ? $aEnv['HTTP_ACCEPT'] : '';
-        $this->_sHttpUserAgent = (isset($aEnv['HTTP_USER_AGENT']) === true) ? $aEnv['HTTP_USER_AGENT'] : '';
-        if (isset($aEnv['HTTP_X_WAP_PROFILE']) === true or isset($aEnv['HTTP_PROFILE']) === true) {
-            $this->_bMobile = true;
-        }
-        elseif (strpos($this->_sHttpAccept, 'text/vnd.wap.wml') !== false or strpos($this->_sHttpAccept, 'application/vnd.wap.xhtml+xml') !== false) {
-            $this->_bMobile = true;
-        }
-        else {
-            foreach (array_keys($this->_aDevices) as $sDevice) {
-                $this->_bMobile = $this->_match($sDevice);
-                if ($this->_bMobile === true) {
-                    break;
-                }
-            }
-        }
+        $this->detect($aEnv);
     }
 
     /**
@@ -156,6 +140,46 @@ class Mobile_Device {
      */
     public function getDeviceClass() {
         return $this->_sClass;
+    }
+
+    /**
+     * Reset the state
+     *
+     * @return Unister_Mobile_Device
+     */
+    public function resetState() {
+        $this->_bMobile = false;
+        $this->_sClass = null;
+        return $this;
+    }
+
+    /**
+     * Detect a device
+     *
+     * @param  array $aEnv The Environment, $_SERVER if not set
+     *
+     * @return boolean
+     */
+    public function detect($aEnv = array()) {
+        $aEnv = (empty($aEnv) === true) ? $_SERVER : $aEnv;
+        $this->_sHttpAccept = (isset($aEnv['HTTP_ACCEPT']) === true) ? $aEnv['HTTP_ACCEPT'] : '';
+        $this->_sHttpUserAgent = (isset($aEnv['HTTP_USER_AGENT']) === true) ? $aEnv['HTTP_USER_AGENT'] : '';
+        if (isset($aEnv['HTTP_X_WAP_PROFILE']) === true or isset($aEnv['HTTP_PROFILE']) === true) {
+            $this->_bMobile = true;
+        }
+        elseif (strpos($this->_sHttpAccept, 'text/vnd.wap.wml') !== false or strpos($this->_sHttpAccept, 'application/vnd.wap.xhtml+xml') !== false) {
+            $this->_bMobile = true;
+        }
+        else {
+            foreach (array_keys($this->_aDevices) as $sDevice) {
+                $this->_bMobile = $this->_match($sDevice);
+                if ($this->_bMobile === true) {
+                    break;
+                }
+            }
+        }
+
+        return $this->isMobile();
     }
 
     /**
