@@ -111,6 +111,32 @@ class Mobile_DeviceTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
+     *
+     */
+    public function testForceState() {
+        $oTest = new Mobile_Device(array());
+        $this->assertInstanceOf('Mobile_Device', $oTest->forceState());
+        $this->assertTrue($oTest->isMobile());
+        $this->assertEquals('generic', $oTest->getDeviceClass());
+    }
+
+    /**
+     *
+     */
+    public function testResetState() {
+        $sBrowser = array_rand($this->_aFixtures['mobile'], 1);
+        $oTest = new Mobile_Device(array(
+            'HTTP_USER_AGENT' => $sBrowser
+        ));
+        $this->assertTrue($oTest->isMobile());
+        $this->assertEquals($this->_aFixtures['mobile'][$sBrowser], $oTest->getDeviceClass());
+
+        $this->assertInstanceOf('Mobile_Device', $oTest->resetState());
+        $this->assertFalse($oTest->isMobile());
+        $this->assertNull($oTest->getDeviceClass());
+    }
+
+    /**
      * Provider for device-tests
      *
      * @return array

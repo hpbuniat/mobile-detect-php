@@ -40,7 +40,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-class Unister_Mobile_Device {
+class Mobile_Device {
 
     /**
      * Error Message, if there was a check for a unknown device-class
@@ -143,9 +143,20 @@ class Unister_Mobile_Device {
     }
 
     /**
+     * Force a mobile device
+     *
+     * @return Mobile_Device
+     */
+    public function forceState() {
+        $this->_bMobile = true;
+        $this->_sClass = 'generic';
+        return $this;
+    }
+
+    /**
      * Reset the state
      *
-     * @return Unister_Mobile_Device
+     * @return Mobile_Device
      */
     public function resetState() {
         $this->_bMobile = false;
