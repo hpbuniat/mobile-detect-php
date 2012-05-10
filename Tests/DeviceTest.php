@@ -67,7 +67,8 @@ class Mobile_DeviceTest extends PHPUnit_Framework_TestCase {
             'Mozilla/5.0 (Linux; U; Android 1.5; de-de; HTC Magic Build/PLAT-RC33) AppleWebKit/528.5+ (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1 FirePHP/0.3' => 'android',
             'Opera/9.51 Beta (Microsoft Windows; PPC; Opera Mobi/1718; U; en)' => 'windows',
             'Mozilla/5.0 (iPad; U; CPU OS 4_2_1 like Mac OS X; ja-jp) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5' => 'ipad',
-            'Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B334b Safari/531.21.10' => 'ipad'
+            'Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B334b Safari/531.21.10' => 'ipad',
+            'Mozilla/5.0 (iPad; CPU OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B176 Safari/7534.48.3' => 'ipad'
         )
     );
 
@@ -108,6 +109,22 @@ class Mobile_DeviceTest extends PHPUnit_Framework_TestCase {
         }
 
         $this->fail('A Exception was not raised');
+    }
+    
+    /**
+     *
+     */
+    public function testIgnore() {
+        $sBrowser = array_rand($this->_aFixtures['mobile'], 1);
+        $sClass = $this->_aFixtures['mobile'][$sBrowser];
+    
+        $oTest = new Mobile_Device();
+        $this->assertInstanceOf('Mobile_Device', $oTest->ignore($sClass));
+        $this->assertFalse($oTest->detect(array(
+            'HTTP_USER_AGENT' => $sBrowser
+        )));
+        $this->assertFalse($oTest->isMobile());
+        $this->assertEquals($sClass, $oTest->getDeviceClass());
     }
 
     /**

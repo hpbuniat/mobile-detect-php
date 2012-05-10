@@ -62,7 +62,15 @@ class Mobile_Device {
      * @var string
      */
     protected $_sHttpUserAgent;
+    
+    /**
+     * Types to ignore. Device-Types, listed here are not recognized as mobile
+     *
+     * @var array
+     */
+    protected $_aIgnore = array();
 
+    
     /**
      * Known Devices
      *
@@ -71,7 +79,7 @@ class Mobile_Device {
     protected $_aDevices = array(
         'android' => 'android',
         'blackberry' => 'blackberry',
-        'iphone' => '(iphone|ipod)',
+        'iphone' => '(iphone|safari mobi|ipod)',
         'ipad' => '(ipad)',
         'opera' => '(opera mini|mini 9.5)',
         'palm' => '(pre\/|palm os|palm|webos|hiptop|treo|avantgo|plucker|xiino|blazer|elaine)',
@@ -122,6 +130,14 @@ class Mobile_Device {
         }
 
         throw new Exception(self::UNKNOWN_DEVICE);
+    }
+    
+    /**
+     *
+     */
+    public function ignore($sIgnore) {
+        $this->_aIgnore[$sIgnore] = true;
+        return $this;
     }
 
     /**
@@ -190,6 +206,10 @@ class Mobile_Device {
             }
         }
 
+        if ($this->_bMobile === true and isset($this->_aIgnore[$this->_sClass]) === true and $this->_aIgnore[$this->_sClass] === true) {
+            $this->_bMobile = false;
+        }
+
         return $this->isMobile();
     }
 
@@ -201,13 +221,14 @@ class Mobile_Device {
      * @return boolean
      */
     protected function _match($sDevice) {
+        $bMatch = false;
         if (is_string($this->_aDevices[$sDevice]) === true) {
-            $this->_aDevices[$sDevice] = (bool) preg_match('!' . $this->_aDevices[$sDevice] . '!i', $this->_sHttpUserAgent);
-            if ($this->_aDevices[$sDevice] === true) {
+            $bMatch = (bool) preg_match('!' . $this->_aDevices[$sDevice] . '!i', $this->_sHttpUserAgent);
+            if ($bMatch === true) {
                 $this->_sClass = $sDevice;
             }
         }
 
-        return $this->_aDevices[$sDevice];
+        return $bMatch;
     }
 }
