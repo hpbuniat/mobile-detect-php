@@ -114,10 +114,12 @@ class Mobile_Device {
      * Overloads the device-checking
      * - e.g. isAndroid, isandroid, android
      *
-     * @param  string $name
-     * @param  array $arguments
+     * @param  string $sName
+     * @param  array $aArgs
      *
      * @return boolean
+     *
+     * @throws Exception if uknown device-class is used
      */
     public function __call($sName, $aArgs) {
         $sName = strtolower($sName);
@@ -131,9 +133,13 @@ class Mobile_Device {
 
         throw new Exception(self::UNKNOWN_DEVICE);
     }
-    
+
     /**
+     * Ignore a device -class
      *
+     * @param  $sIgnore
+     *
+     * @return Unister_Mobile_Device
      */
     public function ignore($sIgnore) {
         $this->_aIgnore[$sIgnore] = true;
